@@ -1,0 +1,62 @@
+[
+{
+    "model": "materials.payment",
+    "pk": 1,
+    "fields": {
+        "user": 1,
+        "date": "2021-01-01",
+        "course": 3,
+        "lesson": null,
+        "amount": 1000.0,
+        "method": "cash"
+    }
+},
+{
+    "model": "materials.payment",
+    "pk": 2,
+    "fields": {
+        "user": 2,
+        "date": "2022-01-01",
+        "course": 3,
+        "lesson": null,
+        "amount": 1000.0,
+        "method": "transfer"
+    }
+},
+{
+    "model": "materials.payment",
+    "pk": 3,
+    "fields": {
+        "user": 3,
+        "date": "2023-01-01",
+        "course": null,
+        "lesson": 2,
+        "amount": 3000.0,
+        "method": "transfer"
+    }
+},
+{
+    "model": "materials.payment",
+    "pk": 4,
+    "fields": {
+        "user": 3,
+        "date": "2024-01-01",
+        "course": null,
+        "lesson": 3,
+        "amount": 2000.0,
+        "method": "cash"
+    }
+},
+{
+    "model": "materials.payment",
+    "pk": 5,
+    "fields": {
+        "user": 1,
+        "date": "2025-01-01",
+        "course": 3,
+        "lesson": null,
+        "amount": 4000.0,
+        "method": "transfer"
+    }
+}
+]
