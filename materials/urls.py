@@ -7,7 +7,7 @@ from materials.views import (
     LessonListAPIView,
     LessonRetrieveAPIView,
     LessonUpdateAPIView,
-    LessonDestroyAPIView,
+    LessonDestroyAPIView, PaymentListAPIView, PaymentCreateAPIView,
 )
 
 from materials.apps import MaterialsConfig
@@ -23,5 +23,7 @@ urlpatterns = [
     path("lessons/create/", LessonCreateAPIView.as_view(), name="lesson_create"),
     path("lessons/update/<int:pk>/", LessonUpdateAPIView.as_view(), name="lesson_update"),
     path("lessons/delete/<int:pk>/", LessonDestroyAPIView.as_view(), name="lesson_delete"),
+    path("payments/", PaymentListAPIView.as_view(), name="payment_list"),
+    path("payments/create/", PaymentCreateAPIView.as_view(), name="payment_create"),
 ]
 urlpatterns += router.urls

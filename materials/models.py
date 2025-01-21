@@ -1,5 +1,7 @@
 from django.db import models
 
+from users.models import User
+
 
 class Course(models.Model):
     """
@@ -55,3 +57,25 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = "урок"
         verbose_name_plural = "уроки"
+
+
+class Payment(models.Model):
+    """
+    Модель платежа.
+    """
+
+    METHOD_CHOICES = [
+        ("cash", "Наличные"),
+        ("transfer", "Перевод"),
+    ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь", related_name="user")
+    date = models.DateField(verbose_name="Дата платежа")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="Курс", related_name="course", blank=True, null=True)
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name="Урок", related_name="lesson", blank=True, null=True)
+    amount = models.FloatField(verbose_name="Сумма платежа")
+    method = models.CharField(
+        max_length=9,
+        choices=METHOD_CHOICES,
+        default="cash",
+        verbose_name="Способ оплаты"
+    )
