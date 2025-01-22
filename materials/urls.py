@@ -7,7 +7,9 @@ from materials.views import (
     LessonListAPIView,
     LessonRetrieveAPIView,
     LessonUpdateAPIView,
-    LessonDestroyAPIView, PaymentListAPIView, PaymentCreateAPIView,
+    LessonDestroyAPIView,
+    PaymentListAPIView,
+    PaymentCreateAPIView,
 )
 
 from materials.apps import MaterialsConfig

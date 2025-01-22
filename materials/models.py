@@ -20,6 +20,9 @@ class Course(models.Model):
         blank=True,
         null=True,
     )
+    owner = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name="Владелец", related_name="courses", null=True, blank=True
+    )
 
     def __str__(self):
         return self.name
@@ -49,7 +52,10 @@ class Lesson(models.Model):
     url = models.URLField(
         blank=True, null=True, verbose_name="Ссылка на видео урока", help_text="Введите ссылку на видео урока"
     )
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="Курс", related_name="lesson")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="Курс", related_name="lessons")
+    owner = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name="Владелец", related_name="lessons", null=True, blank=True
+    )
 
     def __str__(self):
         return self.name
@@ -68,14 +74,17 @@ class Payment(models.Model):
         ("cash", "Наличные"),
         ("transfer", "Перевод"),
     ]
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь", related_name="user")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь", related_name="payments")
     date = models.DateField(verbose_name="Дата платежа")
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="Курс", related_name="course", blank=True, null=True)
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name="Урок", related_name="lesson", blank=True, null=True)
-    amount = models.FloatField(verbose_name="Сумма платежа")
-    method = models.CharField(
-        max_length=9,
-        choices=METHOD_CHOICES,
-        default="cash",
-        verbose_name="Способ оплаты"
+    course = models.ForeignKey(
+        Course, on_delete=models.CASCADE, verbose_name="Курс", related_name="payments", blank=True, null=True
     )
+    lesson = models.ForeignKey(
+        Lesson, on_delete=models.CASCADE, verbose_name="Урок", related_name="payments", blank=True, null=True
+    )
+    amount = models.FloatField(verbose_name="Сумма платежа")
+    method = models.CharField(max_length=9, choices=METHOD_CHOICES, default="cash", verbose_name="Способ оплаты")
+
+    class Meta:
+        verbose_name = "платеж"
+        verbose_name_plural = "платежи"
