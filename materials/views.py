@@ -1,16 +1,26 @@
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
 
-from materials.models import Course, Lesson, Payment
-from materials.serializers import CourseSerializer, LessonSerializer, CourseDetailSerializer, PaymentSerializer
+from materials.models import Course, Lesson, Payment, Subscription
+from materials.pagination import MaterialsPagination
+from materials.serializers import CourseSerializer, LessonSerializer, CourseDetailSerializer, PaymentSerializer, \
+    SubscriptionSerializer
 from users.permissions import IsModerator, IsOwner
 
 
 class CourseViewSet(ModelViewSet):
-    queryset = Course.objects.all()
+    pagination_class = MaterialsPagination
+
+    def get_queryset(self):
+        if IsModerator().has_permission(self.request, self):
+            return Course.objects.all()
+        else:
+            return Course.objects.filter(owner=self.request.user)
 
     def get_serializer_class(self):
         if self.action == "retrieve":
@@ -56,8 +66,14 @@ class LessonCreateAPIView(CreateAPIView):
 
 
 class LessonListAPIView(ListAPIView):
-    queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
+    pagination_class = MaterialsPagination
+
+    def get_queryset(self):
+        if IsModerator().has_permission(self.request, self):
+            return Lesson.objects.all()
+        else:
+            return Lesson.objects.filter(owner=self.request.user)
 
 
 class LessonRetrieveAPIView(RetrieveAPIView):
@@ -90,6 +106,7 @@ class LessonDestroyAPIView(DestroyAPIView):
 class PaymentListAPIView(ListAPIView):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
+    pagination_class = MaterialsPagination
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ("course", "lesson", "method")
     ordering_fields = ("date",)
@@ -102,3 +119,25 @@ class PaymentCreateAPIView(CreateAPIView):
         IsAuthenticated,
         ~IsModerator,
     )
+
+
+class SubscriptionManageAPIView(CreateAPIView):
+    """
+    Контроллер управления подпиской.
+    """
+    queryset = Subscription.objects.all()
+    serializer_class = SubscriptionSerializer
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        course_id = request.data.get('course')
+        course = get_object_or_404(Course, pk=course_id)
+        subs_item = Subscription.objects.filter(user=user, course=course)
+        if subs_item.exists():
+            subs_item.delete()
+            message = 'Подписка удалена'
+        else:
+            Subscription.objects.create(user=user, course=course, is_active=True)
+            message = 'Подписка добавлена'
+            print(Subscription.objects.filter(user=user, course=course))
+        return Response({'message': message})
