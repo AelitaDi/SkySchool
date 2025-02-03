@@ -88,19 +88,13 @@ class LessonRetrieveAPIView(RetrieveAPIView):
 class LessonUpdateAPIView(UpdateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = (
-        IsAuthenticated,
-        IsModerator | IsOwner,
-    )
+    permission_classes = (IsModerator | IsOwner,)
 
 
 class LessonDestroyAPIView(DestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = (
-        IsAuthenticated,
-        IsOwner,
-    )
+    permission_classes = (IsOwner,)
 
 
 class PaymentListAPIView(ListAPIView):
@@ -121,7 +115,7 @@ class PaymentCreateAPIView(CreateAPIView):
     )
 
 
-class SubscriptionManageAPIView(CreateAPIView):
+class SubscriptionManagerAPIView(CreateAPIView):
     """
     Контроллер управления подпиской.
     """
@@ -139,5 +133,4 @@ class SubscriptionManageAPIView(CreateAPIView):
         else:
             Subscription.objects.create(user=user, course=course, is_active=True)
             message = 'Подписка добавлена'
-            print(Subscription.objects.filter(user=user, course=course))
         return Response({'message': message})

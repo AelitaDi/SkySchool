@@ -40,11 +40,13 @@ class CourseDetailSerializer(serializers.ModelSerializer):
     def get_subscription(self, course):
         user = self.request.user
         sub = Subscription.objects.filter(user=user, course=course)
-        return sub.is_active
+        if sub:
+            return sub[0].is_active
+        return False
 
     class Meta:
         model = Course
-        fields = ("name", "description", "lessons_count", "lesson")
+        fields = ("name", "description", "lessons_count", "lesson", "subscription")
 
 
 class PaymentSerializer(serializers.ModelSerializer):
