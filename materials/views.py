@@ -11,7 +11,8 @@ from materials.pagination import MaterialsPagination
 from materials.serializers import CourseSerializer, LessonSerializer, CourseDetailSerializer, PaymentSerializer, \
     SubscriptionSerializer
 from users.permissions import IsModerator, IsOwner
-from users.services import convert_rub_to_dollars, create_stripe_price, create_stripe_session
+from users.services import create_stripe_price, create_stripe_session
+from materials.tasks import hello
 
 
 class CourseViewSet(ModelViewSet):
@@ -147,4 +148,5 @@ class SubscriptionManagerAPIView(CreateAPIView):
         else:
             Subscription.objects.create(user=user, course=course, is_active=True)
             message = 'Подписка добавлена'
+        hello.delay()
         return Response({'message': message})

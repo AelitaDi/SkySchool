@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_filters",
     'drf_yasg',
+    'django_celery_beat',
 
     "users",
     "materials",
@@ -117,3 +118,17 @@ SIMPLE_JWT = {
 }
 
 STRIPE_API_KEY = os.getenv("STRIPE_API_KEY")
+
+CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
+CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/0"
+
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+CELERY_BEAT_SCHEDULE = {
+    'task-name': {
+        'task': 'materials.tasks.hello',
+        'schedule': timedelta(minutes=1),
+    },
+}
