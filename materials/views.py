@@ -11,6 +11,7 @@ from materials.pagination import MaterialsPagination
 from materials.serializers import CourseSerializer, LessonSerializer, CourseDetailSerializer, PaymentSerializer, \
     SubscriptionSerializer
 from users.permissions import IsModerator, IsOwner
+from users.services import convert_rub_to_dollars, create_stripe_price, create_stripe_session
 
 
 class CourseViewSet(ModelViewSet):
@@ -107,12 +108,25 @@ class PaymentListAPIView(ListAPIView):
 
 
 class PaymentCreateAPIView(CreateAPIView):
+    """
+    Создание платежа.
+    """
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     permission_classes = (
         IsAuthenticated,
         ~IsModerator,
     )
+
+    def perform_create(self, serializer):
+        payment = serializer.save(user=self.request.user)
+        product = payment.course.name if payment.course else payment.lesson.name
+        # amount_in_dollars = convert_rub_to_dollars(payment.amount)
+        price = create_stripe_price(payment.amount, product)
+        session_id, payment_link = create_stripe_session(price)
+        payment.session_id = session_id
+        payment.link = payment_link
+        payment.save()
 
 
 class SubscriptionManagerAPIView(CreateAPIView):
