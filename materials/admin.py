@@ -22,4 +22,8 @@ class PaymentAdmin(admin.ModelAdmin):
 
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
-    list_filter = ("course", "user", "is_active",)
+    list_filter = (
+        "course",
+        "user",
+        "is_active",
+    )

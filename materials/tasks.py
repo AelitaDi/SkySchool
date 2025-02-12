@@ -1,10 +1,8 @@
-import datetime
-
-import pytz
 from celery import shared_task
 from django.core.mail import send_mail
+from django.utils import timezone
 
-from config.settings import EMAIL_HOST_USER, TIME_ZONE
+from config.settings import EMAIL_HOST_USER
 from materials.models import Subscription
 from users.models import User
 
@@ -14,18 +12,13 @@ def block_inactive_user():
     """
     Блокирует юзеров, которые не заходили более 30 дней.
     """
-    users = User.objects.filter(is_active=True).exclude(is_superuser=True)
-    tz = pytz.timezone(TIME_ZONE)
-    date_now_tz = datetime.datetime.now(tz)
-    for user in users:
-        if user.last_login:
-            date = user.last_login
-        else:
-            date = user.date_joined
-        time_delta = date_now_tz - date
-        if time_delta > datetime.timedelta(days=30):
-            user.is_active = False
-            print(f"Юзер {user.email} заблокирован. Последний вход: {date}")
+    User.objects.filter(
+        is_active=True,
+        is_staff=False,
+        is_superuser=False,
+        last_login__isnull=False,
+        last_login__lt=timezone.now() - timezone.timedelta(days=30)
+    ).update(is_active=False)
 
 
 @shared_task
@@ -42,5 +35,5 @@ def sendmail_course_update(course):
             message=f"Курс {subscription.course.name} был обновлен.",
             from_email=EMAIL_HOST_USER,
             recipient_list=[subscription.user.email],
-            fail_silently=False
+            fail_silently=False,
         )

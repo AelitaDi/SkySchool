@@ -74,8 +74,9 @@ class Payment(models.Model):
         ("cash", "Наличные"),
         ("transfer", "Перевод"),
     ]
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Пользователь",
-                             related_name="payments")
+    user = models.ForeignKey(
+        User, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Пользователь", related_name="payments"
+    )
     date = models.DateField(auto_now_add=True, verbose_name="Дата платежа")
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, verbose_name="Курс", related_name="payments", blank=True, null=True
@@ -85,10 +86,12 @@ class Payment(models.Model):
     )
     amount = models.PositiveIntegerField(verbose_name="Сумма платежа")
     method = models.CharField(max_length=9, choices=METHOD_CHOICES, default="cash", verbose_name="Способ оплаты")
-    session_id = models.CharField(max_length=255, blank=True, null=True, default=None, verbose_name="id сессии",
-                                  help_text="Введите id сессии")
-    link = models.URLField(max_length=400, blank=True, null=True, verbose_name="Ссылка на оплату",
-                           help_text="Введите ссылку на оплату")
+    session_id = models.CharField(
+        max_length=255, blank=True, null=True, default=None, verbose_name="id сессии", help_text="Введите id сессии"
+    )
+    link = models.URLField(
+        max_length=400, blank=True, null=True, verbose_name="Ссылка на оплату", help_text="Введите ссылку на оплату"
+    )
 
     class Meta:
         verbose_name = "платеж"
@@ -102,6 +105,7 @@ class Subscription(models.Model):
     """
     Модель подписки на обновления курса для пользователя.
     """
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь", related_name="subscriptions")
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="Курс", related_name="subscriptions")
     is_active = models.BooleanField(default=False, verbose_name="Подписка")
