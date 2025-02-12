@@ -111,7 +111,7 @@ class Subscription(models.Model):
             is_active = "активна"
         else:
             is_active = "не активна"
-        return f"{self.user}: подписка на ({self.course} {is_active})"
+        return f"{self.user}: подписка на {self.course} {is_active}"
 
     class Meta:
         verbose_name = "подписка"

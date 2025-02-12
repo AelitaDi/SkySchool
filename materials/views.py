@@ -12,7 +12,7 @@ from materials.serializers import CourseSerializer, LessonSerializer, CourseDeta
     SubscriptionSerializer
 from users.permissions import IsModerator, IsOwner
 from users.services import create_stripe_price, create_stripe_session
-from materials.tasks import hello
+from materials.tasks import sendmail_course_update
 
 
 class CourseViewSet(ModelViewSet):
@@ -33,6 +33,11 @@ class CourseViewSet(ModelViewSet):
         course = serializer.save()
         course.owner = self.request.user
         course.save()
+
+    def perform_update(self, serializer):
+        updated_course = serializer.save()
+        sendmail_course_update.delay(updated_course)
+        updated_course.save()
 
     def get_permissions(self):
         if self.action == "create":
@@ -64,7 +69,9 @@ class LessonCreateAPIView(CreateAPIView):
     def perform_create(self, serializer):
         lesson = serializer.save()
         lesson.owner = self.request.user
+        updated_course = self.request.data.get("course")
         lesson.save()
+        sendmail_course_update.delay(updated_course)
 
 
 class LessonListAPIView(ListAPIView):
@@ -148,5 +155,4 @@ class SubscriptionManagerAPIView(CreateAPIView):
         else:
             Subscription.objects.create(user=user, course=course, is_active=True)
             message = 'Подписка добавлена'
-        hello.delay()
         return Response({'message': message})
