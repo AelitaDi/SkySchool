@@ -8,8 +8,13 @@ from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView,
 
 from materials.models import Course, Lesson, Payment, Subscription
 from materials.pagination import MaterialsPagination
-from materials.serializers import CourseSerializer, LessonSerializer, CourseDetailSerializer, PaymentSerializer, \
-    SubscriptionSerializer
+from materials.serializers import (
+    CourseSerializer,
+    LessonSerializer,
+    CourseDetailSerializer,
+    PaymentSerializer,
+    SubscriptionSerializer,
+)
 from users.permissions import IsModerator, IsOwner
 from users.services import create_stripe_price, create_stripe_session
 from materials.tasks import sendmail_course_update
@@ -119,6 +124,7 @@ class PaymentCreateAPIView(CreateAPIView):
     """
     Создание платежа.
     """
+
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     permission_classes = (
@@ -141,18 +147,19 @@ class SubscriptionManagerAPIView(CreateAPIView):
     """
     Контроллер управления подпиской.
     """
+
     queryset = Subscription.objects.all()
     serializer_class = SubscriptionSerializer
 
     def post(self, request, *args, **kwargs):
         user = self.request.user
-        course_id = request.data.get('course')
+        course_id = request.data.get("course")
         course = get_object_or_404(Course, pk=course_id)
         subs_item = Subscription.objects.filter(user=user, course=course)
         if subs_item.exists():
             subs_item.delete()
-            message = 'Подписка удалена'
+            message = "Подписка удалена"
         else:
             Subscription.objects.create(user=user, course=course, is_active=True)
-            message = 'Подписка добавлена'
-        return Response({'message': message})
+            message = "Подписка добавлена"
+        return Response({"message": message})

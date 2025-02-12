@@ -21,7 +21,7 @@ class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = "__all__"
-        validators = [UrlValidator(field='url')]
+        validators = [UrlValidator(field="url")]
 
 
 class CourseDetailSerializer(serializers.ModelSerializer):
@@ -32,7 +32,7 @@ class CourseDetailSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.request = kwargs.get('context').get('request')
+        self.request = kwargs.get("context").get("request")
 
     def get_lessons_count(self, course):
         return Lesson.objects.filter(course=course).count()
