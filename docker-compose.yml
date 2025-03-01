@@ -39,7 +39,7 @@ services:
       - db
       - web
     env_file:
-      - .env
+      - ./.env
 
   celery-beat:
     build: .
@@ -51,7 +51,7 @@ services:
       - db
       - web
     env_file:
-      - .env
+      - ./.env
 
 volumes:
   postgres_data:
