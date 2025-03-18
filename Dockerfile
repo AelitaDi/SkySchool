@@ -5,16 +5,11 @@ FROM python:3.12-slim
 WORKDIR /app
 
 # Устанавливаем зависимости системы
-RUN apt-get update && apt-get install -y gcc libpq-dev && rm -rf /var/lib/apt/lists/*
-
-# Устанавливаем poetry
+RUN pip install --upgrade pip
 RUN pip install poetry
-
-# Копируем файл зависимостей в контейнер
+RUN poetry config virtualenvs.create false
 COPY pyproject.toml poetry.lock ./
-
-# Устанавливаем зависимости с помощью Poetry
-RUN poetry install --no-root -vvv
+RUN poetry install --no-root
 
 # Копируем исходный код приложения в контейнер
 COPY . .
