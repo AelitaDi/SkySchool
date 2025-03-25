@@ -44,6 +44,7 @@ jobs:
 
       - name: Run Redis
         run: |
+          sudo apt-get install redis-server
           sudo systemctl start redis-server
         env:
           REDIS_HOST: ${{ secrets.REDIS_HOST }}
