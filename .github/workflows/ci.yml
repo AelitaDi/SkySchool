@@ -94,7 +94,7 @@ jobs:
 
       - name: Debug SSH key
         run: |
-          echo "SSH key:"
+          echo "TEST TEST TEST SSH key:"
           ls -l ~/.ssh/
           ssh-add -l
 
