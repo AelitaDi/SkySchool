@@ -96,7 +96,7 @@ jobs:
 
       - name: Deploy to server
         run: |
-          ssh -o StrictHostKeyChecking=no -l ${{ secrets.SSH_USER }} ${{ secrets.SSH_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=yes ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}  << 'EOF'
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
           docker stop myapp || true
           docker rm myapp || true
