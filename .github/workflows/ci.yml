@@ -91,6 +91,9 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
       - name: Deploy to server
         run: |
           ssh -l ${{ secrets.SSH_USER }} ${{ secrets.SERVER_IP }} << 'EOF'
