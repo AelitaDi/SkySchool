@@ -49,14 +49,17 @@ jobs:
         env:
           REDIS_HOST: ${{ secrets.REDIS_HOST }}
 
-      - name: Set environment variables
+#      - name: Set environment variables
+#        run: |
+#          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+
+      - name: Create .env file
         run: |
-          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+          touch .env
+          echo '"${{ secrets.ENV_FILE }}"' | sed "s/\"//g" > .env
 
       - name: Run tests
         run: python manage.py test
-        env:
-          SECRET_KEY: test_secret_key
 
   build:
     needs: test
