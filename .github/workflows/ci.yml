@@ -104,6 +104,11 @@ jobs:
           echo "DEBUG KNOWN_HOSTS"
           cat ~/.ssh/known_hosts
 
+      - name: Create .env file
+        run: |
+          touch .env
+          echo '"${{ secrets.ENV_FILE }}"' | sed "s/\"//g" > .env
+
       - name: Deploy to server
         run: |
           ssh -tt -o StrictHostKeyChecking=yes ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}  << 'EOF'
