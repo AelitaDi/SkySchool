@@ -3,10 +3,10 @@ version: "3.9"
 services:
   web:
     build: .
-    command: sh -c "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:8000
-    environment:
-      - DEBUG=True
-      - DATABASE_HOST=db
+    command: sh -c "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:8000"
+#    environment:
+#      - DEBUG=True
+#      - DATABASE_HOST=db
     volumes:
       - .:/app
       - static_volume:/app/staticfiles
