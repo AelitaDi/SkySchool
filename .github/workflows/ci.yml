@@ -92,12 +92,6 @@ jobs:
           ssh-private-key: |
             ${{ secrets.SSH_KEY }}
 
-#      - name: Debug SSH key
-#        run: |
-#          echo "TEST TEST TEST SSH key:"
-#          ls -l ~/.ssh/
-#          ssh-add -l
-
       - name: Adding Known Hosts
         run: |
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
@@ -109,12 +103,6 @@ jobs:
           touch .env
           echo '"${{ secrets.ENV_FILE }}"' | sed "s/\"//g" > .env
 
-#      - name: Log in to Docker Hub
-#        run: echo "$DOCKER_HUB_ACCESS_TOKEN" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
-#        env:
-#          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-#          DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
       - name: Deploy to server
         run: |
           ssh -tt -o StrictHostKeyChecking=yes ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}  << 'EOF'
@@ -125,7 +113,5 @@ jobs:
           touch .env
           echo '"${{ secrets.ENV_FILE }}"' | sed "s/\"//g" > .env
           docker run -d --name myapp --env-file .env -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
+          docker logs myapp
           EOF
-        env:
-          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-          DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
