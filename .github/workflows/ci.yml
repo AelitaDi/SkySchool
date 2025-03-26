@@ -118,7 +118,7 @@ jobs:
       - name: Deploy to server
         run: |
           ssh -tt -o StrictHostKeyChecking=yes ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}  << 'EOF'
-          echo "$DOCKER_HUB_ACCESS_TOKEN" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+          echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
           docker pull "$DOCKER_HUB_USERNAME"/myapp:${{ github.sha }}
           docker stop myapp || true
           docker rm myapp || true
