@@ -115,4 +115,6 @@ jobs:
           docker run -d --name myapp --env-file .env -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
           sleep 5
           docker logs myapp
+          sudo nginx -t
+          cat /etc/nginx/nginx.conf
           EOF
