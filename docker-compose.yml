@@ -8,15 +8,15 @@ services:
 #      - DEBUG=True
 #      - DATABASE_HOST=db
     volumes:
-      - .:/app
-      - static_volume:/app/staticfiles
+      - .:/code
+      - static_volume:/code/staticfiles
     ports:
       - "8000:8000"
     depends_on:
       - db
       - redis
     env_file:
-      - ./.env
+      - .env
 
   nginx:
     build:
