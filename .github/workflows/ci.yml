@@ -112,7 +112,7 @@ jobs:
           docker rm myapp || true
           touch .env
           echo '"${{ secrets.ENV_FILE }}"' | sed "s/\"//g" > .env
-          docker run -d --name myapp --env-file .env -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
+          docker run -d --name myapp --env-file .env -p 8080:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
           sleep 5
           docker logs myapp
           sudo nginx -t
