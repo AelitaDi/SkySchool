@@ -18,10 +18,10 @@ COPY pyproject.toml poetry.lock ./
 RUN poetry install --no-root
 
 # Копируем исходный код приложения в контейнер
-COPY . .
+COPY . /app/
 
 # Создаем директорию для медиафайлов
-RUN mkdir -p /app/media
+RUN mkdir -p /app/media && chmod -R 755 /app/media
 RUN mkdir -p /app/staticfiles && chmod -R 755 /app/staticfiles
 
 # Пробрасываем порт, который будет использовать Django
