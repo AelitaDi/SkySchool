@@ -80,7 +80,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
       - name: Check out code
@@ -111,5 +111,4 @@ jobs:
           docker stop myapp || true
           docker rm myapp || true
           docker run -d --name myapp --env-file .env -p 8080:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
-          sudo cat .env
           EOF
